@@ -1,0 +1,24 @@
+kind = "web"
+previewPath = "/"
+title = "TunnelRDP"
+description = "A Next.js web application that authenticates with GitHub and automates temporary Windows RDP server deployments through GitHub Actions and tunneling providers."
+version = "1.0.0"
+id = "artifacts/tunnel-rdp"
+router = "path"
+
+[[services]]
+name = "web"
+paths = [ "/" ]
+localPort = 3000
+
+[services.development]
+run = "npm run dev"
+
+[services.production]
+build = [ "npm", "run", "build" ]
+serve = "static"
+publicDir = ".next"
+
+[services.env]
+PORT = "3000"
+BASE_PATH = "/"
