@@ -1,3 +1,5 @@
+run = "npm run dev"
+entrypoint = "package.json"
 modules = ["nodejs-24"]
 
 [deployment]
@@ -18,3 +20,6 @@ expertMode = true
 [postMerge]
 path = "scripts/post-merge.sh"
 timeoutMs = 20000
+
+[nix]
+channel = "stable-25_05"
