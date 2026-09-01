@@ -1,1 +1,2 @@
 - [Next.js workspace TypeScript scope](next-workspace-typescript.md) — isolate Next.js typechecking from unrelated Vite/workspace packages.
+- [Preview artifact routing](preview-artifact-routing.md) — a healthy local port still needs a registered web artifact and one managed workflow owner.

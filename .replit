@@ -48,4 +48,3 @@ channel = "stable-25_05"
 [userenv]
 
 [userenv.shared]
-NEXT_PUBLIC_SUPABASE_URL = "https://bnjqxsdnmhgfqfcwtnve.supabase.co"

@@ -1,15 +1,55 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim()
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: false
+function isValidHttpUrl(value: string | undefined): value is string {
+  if (!value) return false
+
+  try {
+    const url = new URL(value)
+    return url.protocol === 'http:' || url.protocol === 'https:'
+  } catch {
+    return false
   }
+}
+
+const hasSupabaseConfig = isValidHttpUrl(supabaseUrl) && Boolean(supabaseAnonKey)
+
+const unavailableSupabase = new Proxy({} as SupabaseClient, {
+  get(_target, property: string | symbol) {
+    if (property === 'channel') {
+      return () => ({
+        on() {
+          return this
+        },
+        subscribe() {
+          return { unsubscribe() {} }
+        },
+      })
+    }
+
+    throw new Error(
+      'Supabase is not configured. Add a valid NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY.',
+    )
+  },
 })
+
+export const supabase = hasSupabaseConfig
+  ? createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: false,
+      },
+    })
+  : unavailableSupabase
+
+if (!hasSupabaseConfig) {
+  console.warn(
+    'Supabase is not configured; the app will use local storage fallbacks until valid environment variables are provided.',
+  )
+}
 
 // Types for our database schema
 export interface Database {
