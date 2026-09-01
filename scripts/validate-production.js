@@ -5,9 +5,8 @@
  * Validates the entire RDP automation system for production readiness
  */
 
-const fs = require('fs');
-const path = require('path');
-const { execSync } = require('child_process');
+import fs from 'node:fs';
+import { execSync } from 'node:child_process';
 
 console.log('🚀 RDP Automation Production Validation');
 console.log('=====================================\n');
@@ -159,19 +158,14 @@ function checkBuild() {
 function checkEnvironment() {
   console.log('\n📋 Checking environment configuration...');
   
+  // Vercel injects production variables through the project environment.
+  // Local env files are optional and must never be required in CI.
   const envExample = '.env.example';
-  const envLocal = '.env.local';
-  
+
   if (fs.existsSync(envExample)) {
     console.log('✅ Environment example file exists');
   } else {
-    validationWarnings.push('Environment example file (.env.example) not found');
-  }
-
-  if (fs.existsSync(envLocal)) {
-    console.log('✅ Local environment file exists');
-  } else {
-    validationWarnings.push('Local environment file (.env.local) not found');
+    validationWarnings.push('Environment example file (.env.example) not found; Vercel variables are configured in the project settings.');
   }
 }
 
