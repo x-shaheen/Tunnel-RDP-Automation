@@ -1,0 +1,1 @@
+- [Next.js workspace TypeScript scope](next-workspace-typescript.md) — isolate Next.js typechecking from unrelated Vite/workspace packages.
